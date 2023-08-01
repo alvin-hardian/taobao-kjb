@@ -6,7 +6,7 @@ from tkinter import filedialog
 
 # Set the path to your FFmpeg executable
 ffmpeg_path = 'ffmpeg/bin/ffmpeg.exe'
-
+ffprobe_path = 'ffmpeg/bin/ffprobe.exe'
 # Function to process the files
 def process_files():
     input_folder = input_folder_var.get()
@@ -37,9 +37,16 @@ def process_files():
             output_file = os.path.join(output_folder, os.path.splitext(file)[0] + '.mp4')
             
             # Check if the file has at least two audio tracks
-            probe = ffmpeg.probe(input_file)
-            audio_streams = [stream for stream in probe['streams'] if stream['codec_type'] == 'audio']
-            if len(audio_streams) < 2:
+            cmd = [ffmpeg_path, '-i', input_file]
+            try:
+                ffprobe_output = subprocess.check_output(cmd, stderr=subprocess.STDOUT).decode()
+            except subprocess.CalledProcessError as e:
+                print(f"Error occurred while running ffprobe for file {input_file}: {e}")
+                completed_files += 1
+                continue
+
+            audio_count = ffprobe_output.count('Stream #0:1: Audio')
+            if audio_count < 2:
                 print(f"Skipping {input_file}: File doesn't have exactly two audio tracks (stereo).")
                 completed_files += 1
                 continue
