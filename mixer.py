@@ -29,7 +29,7 @@ def process_files():
     completed_files = 0
     # Update the status label to display the current file being processed
     for file in input_files:
-        if file.lower().endswith('.mkv'):
+        if file.lower().endswith('.mkv') or file.lower().endswith('.mp4'):
             current_file_label.config(text="Processing: {} / {}\nFile: {}".format(completed_files, total_files, file))
             root.update()
 
