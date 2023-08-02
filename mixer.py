@@ -68,6 +68,7 @@ def process_files():
             completed_files += 1
     # Show a message box when processing is done
     current_file_label.config(text="Processing: Complete")
+    progress_bar['value'] = total_files
     root.update()
     tk.messagebox.showinfo("Processing Complete", "Audio channels mapping is done!")
 
